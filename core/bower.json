@@ -1,0 +1,27 @@
+{
+  "name": "tjazi_web_core",
+  "description": "tjazi_web_core",
+  "main": "index.js",
+  "authors": [
+    "Krzysztof Wasiak"
+  ],
+  "license": "Apache-2.0",
+  "homepage": "http://tjazi.com",
+  "moduleType": [
+    "node"
+  ],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "angularjs#^1.5.0",
+    "angular-ui-router": "^0.2.18",
+    "angular-resource": "^1.5.0",
+    "bootstrap": "^3.3.6"
+  }
+}
