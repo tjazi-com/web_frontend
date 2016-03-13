@@ -16,12 +16,20 @@ var WebSocketClient = function(topic) {
     }
 
     else {
-        var endpointName = "/messages";
+        var socketHost = window.configParams.socket_host;
+        if (!socketHost) {
+            log.error("Web socket host is not set");
+            return;
+        }
+
+        // socket_host is set in index.html - via configuration parameters
+        var endpointName = window.configParams.socket_host + "/messages";
         var targetTopic = topic;
         var stompClient = null;
 
         _connectViaWebSocket = function(connectCallback, messageReceiveCallback) {
 
+            console.log("Connecting to websocket. Endpoint: " + endpointName);
             var socket = new SockJS(endpointName);
             stompClient = Stomp.over(socket);
             stompClient.connect({}, function connectionAck(frame) {
