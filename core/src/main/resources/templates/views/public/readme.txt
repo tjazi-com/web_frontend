@@ -1,0 +1,1 @@
+This folder contains files, which will be visible to all users (including non-authenticated)

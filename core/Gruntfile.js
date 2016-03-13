@@ -1,81 +1,188 @@
+"use strict";
+
+var fs = require("fs");
+var projectStructure = JSON.parse(fs.readFileSync("Gruntfile.config.json"));
+
 module.exports = function (grunt) {
-    'use strict';
-    // Project configuration
+
     grunt.initConfig({
-        // Metadata
-        pkg: grunt.file.readJSON('package.json'),
-        banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
-            '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
-            '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
-            '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
-            ' Licensed <%= props.license %> */\n',
-        // Task configuration
+
+        jshint: {
+            serverSide: {
+                src: ['Gruntfile.js'],
+                options: {
+                    unused: true,
+                    strict: true,
+                    curly: true,
+                    node: true
+                }
+            },
+            clientSide: {
+                src: [projectStructure.appJsFiles],
+                options: {
+                    unused: true,
+                    strict: true,
+                    curly: true,
+                    browser: true
+                }
+            }
+        },
+
+        htmlhint: {
+            options: {
+                'attr-lower-case': true,
+                'attr-value-not-empty': true,
+                'tag-pair': true,
+                'tag-self-close': true,
+                'tagname-lowercase': true,
+                'id-class-value': true,
+                'id-class-unique': true,
+                'src-not-empty': true,
+                'img-alt-required': true
+            },
+            src: [projectStructure.htmlFiles]
+        },
+
+        // WARNING!!! html minification seems to be breaking link tags
+        // <link /> to <link>; thymeleaf doesn't like that
+        htmlmin: {
+            dev: {
+                options: {
+                    //removeEmptyAttributes: true,
+                    //removeEmptyElements: true,
+                    //removeRedundantAttributes: true,
+                    //removeComments: true,
+                    // html and body are OPTIONAL, so will be removed by below option
+                    // this will blow-up the thymeleaf engine, so careful with that
+                    // removeOptionalTags: true,
+                    collapseWhitespace: true
+                },
+                files: [{
+                    expand: true,
+                    cwd: 'src/main/webapp/WEB-INF/',
+                    dest: 'src/main/webapp/WEB-INF/',
+                    src: ["*.html"],
+                    ext: ".min.html",
+                    extDot: "last"
+                }]
+            }
+        },
+
+        less: {
+            development: {
+                options: {
+                    compress: false,
+                    yuicompress: false,
+                    optimization: 2
+                },
+                files: projectStructure.lessToCssFiles
+            },
+            production: {
+                options: {
+                    compress: true,
+                    yuicompress: true,
+                    optimization: 2
+                },
+                files: projectStructure.lessToCssFiles
+            }
+        },
+
         concat: {
             options: {
-                banner: '<%= banner %>',
-                stripBanners: true
+                separator: ';'
             },
-            dist: {
-                src: ['lib/tjazi-web-core.js'],
-                dest: 'dist/tjazi-web-core.js'
+            development: {
+                // the output files for development are the same as for uglify output
+                // uglify will not be run for development
+                files: [
+                    {
+                        src: projectStructure.libJsFiles,
+                        dest: projectStructure.outputMinifyLibsJsPath
+                    },
+                    {
+                        src: projectStructure.appJsFiles,
+                        dest: projectStructure.outputMinifyAppJsPath
+                    }
+                ]
+            },
+            production: {
+                files: [
+                    {
+                        src: projectStructure.libJsFiles,
+                        dest: projectStructure.outputConcatLibsJsPath
+                    },
+                    {
+                        src: projectStructure.appJsFiles,
+                        dest: projectStructure.outputConcatAppJsPath
+                    }
+                ]
             }
         },
+
         uglify: {
             options: {
-                banner: '<%= banner %>'
+                /* options placeholder */
             },
-            dist: {
-                src: '<%= concat.dist.dest %>',
-                dest: 'dist/tjazi-web-core.min.js'
+            application: {
+                files: [
+                    {
+                        src: projectStructure.outputConcatLibsJsPath,
+                        dest: projectStructure.outputMinifyLibsJsPath
+                    }
+                ]
+            },
+
+            libraries: {
+                files: [
+                    {
+                        src: projectStructure.outputConcatAppJsPath,
+                        dest: projectStructure.outputMinifyAppJsPath
+                    }
+                ]
             }
         },
-        jshint: {
-            options: {
-                node: true,
-                curly: true,
-                eqeqeq: true,
-                immed: true,
-                latedef: true,
-                newcap: true,
-                noarg: true,
-                sub: true,
-                undef: true,
-                unused: true,
-                eqnull: true,
-                browser: true,
-                globals: { jQuery: true },
-                boss: true
-            },
-            gruntfile: {
-                src: 'gruntfile.js'
-            },
-            lib_test: {
-                src: ['lib/**/*.js', 'test/**/*.js']
+
+        copy: {
+            main: {
+                files: projectStructure.miscFilesToCopy
             }
         },
-        qunit: {
-            files: ['test/**/*.html']
-        },
+
         watch: {
-            gruntfile: {
-                files: '<%= jshint.gruntfile.src %>',
-                tasks: ['jshint:gruntfile']
+            javascript: {
+                files: [
+                    'project_structure.json',
+                    '<%= jshint.clientSide.src %>',
+                    '<%= jshint.serverSide.src %>'],
+                tasks: ['jshint', 'concat:development']
             },
-            lib_test: {
-                files: '<%= jshint.lib_test.src %>',
-                tasks: ['jshint:lib_test', 'qunit']
+            html: {
+                files: [projectStructure.htmlFiles],
+                tasks: ['htmlhint']
+            },
+            css: {
+                files: [projectStructure.lessFiles],
+                tasks: ['less:development']
             }
         }
     });
 
-    // These plugins provide necessary tasks
+    // Load the plugin that provides the "uglify" task.
+    grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-contrib-qunit');
-    grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-htmlhint');
+    grunt.loadNpmTasks('grunt-contrib-htmlmin');
+    grunt.loadNpmTasks('grunt-contrib-copy');
 
-    // Default task
-    grunt.registerTask('default', ['jshint', 'qunit', 'concat', 'uglify']);
+    // Default task(s).
+    grunt.registerTask('default',
+        ['jshint', 'htmlhint', 'less:development', 'concat:development', 'copy', 'watch']);
+
+    grunt.registerTask('development', ['default']);
+    grunt.registerTask('production',
+        ['jshint', 'htmlhint', 'less:production', 'concat:production', 'uglify', 'copy']);
 };
 

@@ -1,0 +1,1 @@
+This folder contains files, which be visible to the user, who logged-in to the server.

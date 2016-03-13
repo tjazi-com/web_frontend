@@ -1,0 +1,54 @@
+{
+  "appJsFiles": [ "src/main/javascript/serviceclients/*.common.js",
+                  "src/main/javascript/serviceclients/*.js",
+                  "src/main/javascript/app/*.js",
+                  "src/main/javascript/utils/*.js",
+                  "src/main/javascript/angularcontroller/*.js"],
+
+  "libJsFiles": ["bower_components/angular/angular.js",
+    "bower_components/angular-resource/angular-resource.js",
+    "bower_components/angular-ui-router/release/angular-ui-router.js",
+    "bower_components/jquery/dist/jquery.js",
+    "bower_components/bootstrap/dist/js/bootstrap.js",
+    "bower_components/sockjs/sockjs.js",
+    "libs/javascript/stomp/stomp.js"],
+
+  "htmlFiles": [
+    "src/main/resources/templates/index.html",
+    "src/main/resources/templates/views/public/*.html",
+    "src/main/resources/templates/views/secure/*.html"],
+
+  "outputConcatAppJsPath": "src/main/resources/static/js/app.js",
+  "outputConcatLibsJsPath": "src/main/resources/static/js/libs.js",
+
+  "outputMinifyAppJsPath": "src/main/resources/static/js/app.min.js",
+  "outputMinifyLibsJsPath": "src/main/resources/static/js/libs.min.js",
+
+  "lessFiles": "src/main/less/**/*.less",
+
+  "lessToCssFiles": {
+    "src/main/resources/static/css/libs.css" : "src/main/less/libs.less",
+    "src/main/resources/static/css/app.css" : ["src/main/less/**/app.less", "src/main/less/**/*View.less"]
+  },
+
+  "miscFilesToCopy": [
+    {
+      "expand": true,
+      "cwd": "bower_components/bootstrap/dist/fonts/",
+      "src":  "*",
+      "dest": "src/main/resources/static/fonts/"
+    },
+    {
+      "expand": true,
+      "cwd": "src/main/resources/templates/views/public/",
+      "src":  "*.html",
+      "dest": "src/main/resources/static/views/public/"
+    },
+    {
+      "expand": true,
+      "cwd": "src/main/resources/templates/views/secure/",
+      "src":  "*.html",
+      "dest": "src/main/resources/static/views/secure/"
+    }
+  ]
+}

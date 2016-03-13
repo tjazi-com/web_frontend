@@ -1,0 +1,27 @@
+<div id="chat">
+    <div id="chat_history">
+        <div style="margin: 10px 20px; "
+             ng-repeat="message in vm.allReceivedMessages">
+            <div style="margin: 0px 10px; ">
+                <div>
+                    {{ message.sender }}
+                </div>
+                <div>
+                    {{ message.text }}
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div id="chat_new_message">
+        <textarea ng-model="vm.testBoxMessageText"
+                  ng-keyup="vm.onKeyUp($event)"
+                  rows="1"
+                  placeholder="Enter message">
+        </textarea>
+        <div class="btn btn-success"
+             ng-click="vm.onSubmitMessageClick()">
+            Submit
+        </div>
+    </div>
+</div>

@@ -54,8 +54,10 @@ buildNumber.properties
 ### Yeoman template
 node_modules/
 bower_components/
-*.log
 
 build/
 dist/
+
+# generated static content
+src/main/resources/static
 
