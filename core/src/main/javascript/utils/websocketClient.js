@@ -23,14 +23,15 @@ var WebSocketClient = function(topic) {
         }
 
         // socket_host is set in index.html - via configuration parameters
-        var endpointName = window.configParams.socket_host + "/messages";
+        var endpointName = "/messages";
+        var endpointUrl = window.configParams.socket_host + endpointName;
         var targetTopic = topic;
         var stompClient = null;
 
         _connectViaWebSocket = function(connectCallback, messageReceiveCallback) {
 
-            console.log("Connecting to websocket. Endpoint: " + endpointName);
-            var socket = new SockJS(endpointName);
+            console.log("Connecting to websocket. Endpoint URL: " + endpointUrl);
+            var socket = new SockJS(endpointUrl);
             stompClient = Stomp.over(socket);
             stompClient.connect({}, function connectionAck(frame) {
                 console.log("websocketClient: " + frame);

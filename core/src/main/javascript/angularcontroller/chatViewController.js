@@ -70,6 +70,8 @@
         function sendMessage() {
             var messageText = vm.textBoxMessageText;
 
+            console.log("Sending message: " + vm);
+
             if (messageText !== "") {
                 vm.webSocketClient.sendMessageViaWebSocket(messageText);
 

@@ -14,9 +14,10 @@
         </div>
     </div>
     <div id="chat_new_message">
-        <textarea ng-model="vm.testBoxMessageText"
+        <textarea ng-model="vm.textBoxMessageText"
                   ng-keyup="vm.onKeyUp($event)"
                   rows="1"
+                  class="form-control"
                   placeholder="Enter message">
         </textarea>
         <div class="btn btn-success"
