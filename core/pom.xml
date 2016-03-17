@@ -24,6 +24,14 @@
 	</properties>
 
 	<dependencies>
+		<!-- Tjazi.com dependencies -->
+		<dependency>
+			<groupId>com.tjazi.chatrooms</groupId>
+			<artifactId>client</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+
+		<!-- Spring dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
